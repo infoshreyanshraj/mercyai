@@ -1,15 +1,29 @@
-# MERCY AI — Liquid Glass dashboard
+# MERCY AI — Dynamic backend starter
 
-Responsive black/purple assistant UI with a pulsing animated core, working navigation, local demo profile, media shortcuts, voice input where supported, and a browser-side encrypted API-vault prototype.
+This folder adds an API backend to the existing MERCY AI GitHub Pages frontend.
 
-## Free hosting on GitHub Pages
-1. Upload `index.html`, `style.css`, `script.js`, and `README.md` to the repository root.
-2. Open Settings → Pages.
-3. Choose Deploy from a branch → `main` → `/(root)` → Save.
+## Features in this backend
+- PostgreSQL user accounts and notes
+- Password hashing with bcrypt
+- Signed JWT sessions
+- Rate-limited login and chat routes
+- AI provider proxy so the AI key stays on the server
+- Health endpoint: `/api/health`
 
-## Important limitations
-- Account forms are a local demo profile only; no real authentication is implemented.
-- The API vault encrypts a test key in this browser, but this prototype is not security-audited and doesn't call a bot. Never use production secrets here.
-- End-to-end encrypted chat requires a carefully designed protocol and a backend/key-management design; it is not included in this static prototype.
-- YouTube, Spotify, and Apple Music buttons open official sites. Linking accounts requires official OAuth flows.
-- System monitor values are illustrative, not actual PC stats.
+## Deploy to Render
+1. Push this folder's files into a backend repository (or the root of the existing repository).
+2. Create a PostgreSQL database on a provider you control.
+3. In Render, create a new Blueprint and select the repo containing `render.yaml`.
+4. Set `DATABASE_URL` to the database's internal/external connection string as appropriate.
+5. Set `AI_API_KEY` privately in the service environment. Never place it in frontend JavaScript or GitHub Pages.
+6. Deploy and open `https://YOUR-SERVICE.onrender.com/api/health`.
+
+## Frontend connection
+After deployment, set `window.MERCY_API_URL` in the website's frontend config to the deployed API URL, then update the existing signup/login and chat forms to call `/api/auth/signup`, `/api/auth/login`, and `/api/chat`. The current UI is still a separate frontend and must be wired to these endpoints before the buttons use this backend.
+
+## Important
+- This is a backend starter, not a completed production deployment. The API has not been deployed by this package.
+- Do not collect real user credentials until the website's frontend is wired to the backend and tested over HTTPS.
+- The chat route requires an AI provider key and may incur usage charges.
+- This is not end-to-end encrypted messaging. HTTPS and server-side encryption are different from E2EE.
+- GitHub Pages only serves static frontend assets; it cannot run this Node.js server.
